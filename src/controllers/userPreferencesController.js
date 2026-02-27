@@ -3,11 +3,10 @@ const userPreferencesService = require('../services/userPreferencesService');
 const createUserPreferences = async(req, res, next) => {
     try {
         const {
-            language,
             category,
             country
         } = req.body;
-        const userPreference = await userPreferencesService.createUserPreferences(req.user.id, language, category, country);
+        const userPreference = await userPreferencesService.createUserPreferences(req.user.id, category, country);
         return res.status(200).json({ data: userPreference });
     } catch(error) {
         next(error);
@@ -25,7 +24,12 @@ const retrieveUserPreferences = async(req, res, next) => {
 
 const updateUserPreferences = async(req, res, next) => {
     try {
-        return res.status(200).json();
+        const {
+            category,
+            country
+        } = req.body;
+        await userPreferencesService.updateUserPreferences(req.params.id, category, country);
+        return res.status(204).json();
     } catch(error) {
         next(error);
     }

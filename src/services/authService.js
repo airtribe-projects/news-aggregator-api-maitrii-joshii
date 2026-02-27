@@ -15,7 +15,7 @@ class AuthService {
         }
         const user = await userRepository.create(userEntity);
         return user;
-    }
+    };
 
     login = async(email, password) => {
         const user = userRepository.findByEmail(email);
@@ -34,7 +34,7 @@ class AuthService {
 
         return token;
 
-    }
+    };
 
 }
 

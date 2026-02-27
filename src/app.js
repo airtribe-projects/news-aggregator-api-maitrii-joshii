@@ -3,11 +3,13 @@ const app = express();
 const port = 3000;
 const authRouter = require('./routers/authRouter');
 const userPreferencesRouter = require('./routers/userPreferencesRouter');
+const newsRouter = require('./routers/newsRouter');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRouter);
 app.use("/preferences", userPreferencesRouter);
+app.use("/news", newsRouter);
 
 app.listen(port, (err) => {
     if (err) {
