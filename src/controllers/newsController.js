@@ -17,7 +17,7 @@ const fetchTopHeadlines = async(req, res, next) => {
         
         const newsService = new NewsService();
         const topHeadlines = await newsService.fetchTopHeadlines(userPreference.category, userPreference.country);
-        return res.status(200).json({ data: topHeadlines });
+        return res.status(200).json({ news: topHeadlines });
     } catch(error) {
         next(error);
     }

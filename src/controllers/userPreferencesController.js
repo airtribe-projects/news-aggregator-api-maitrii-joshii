@@ -8,7 +8,7 @@ const createUserPreferences = async(req, res, next) => {
             country
         } = req.body;
         const userPreference = await userPreferencesService.createUserPreferences(req.user.id, category, country);
-        return res.status(200).json({ data: userPreference });
+        return res.status(200).json({ preferences: userPreference });
     } catch(error) {
         next(error);
     }
@@ -17,7 +17,7 @@ const createUserPreferences = async(req, res, next) => {
 const retrieveUserPreferences = async(req, res, next) => {
     try {
         const userPreference = await userPreferencesService.retrieveUserPreferences(req.user.id);
-        return res.status(200).json({ data: userPreference });
+        return res.status(200).json({ preferences: userPreference });
     } catch(error) {
         next(error);
     }

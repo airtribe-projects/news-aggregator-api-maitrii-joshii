@@ -1,7 +1,7 @@
 const { z } = require('zod');
 
 const registerSchema = z.object({
-    userName: z
+    name: z
         .string({ message: "Invalid User Name" })
         .trim()
         .min(1, { message: "User Name cannot be empty" }),

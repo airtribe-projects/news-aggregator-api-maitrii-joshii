@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 class AuthService {
     
-    register = async(userName = undefined, email = undefined, password = undefined) => {
+    register = async(name = undefined, email = undefined, password = undefined) => {
         const existingUser = userRepository.findByEmail(email);
         if(existingUser) {
             throw new DuplicateUserError();
@@ -15,7 +15,7 @@ class AuthService {
 
         const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
         const userEntity = {
-            userName: userName,
+            name: name,
             email: email,
             password: hashedPassword
         }

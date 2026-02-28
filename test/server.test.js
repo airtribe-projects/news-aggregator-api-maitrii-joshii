@@ -1,27 +1,35 @@
 const tap = require('tap');
 const supertest = require('supertest');
-const app = require('../app');
+const app = require('../src/app');
 const server = supertest(app);
 
 const mockUser = {
     name: 'Clark Kent',
     email: 'clark@superman.com',
-    password: 'Krypt()n8',
-    preferences:['movies', 'comics']
+    password: 'Krypt()n8'
 };
+
+const mockUserPreferences = [
+    {
+        id: 1,
+        userId: 1,
+        category: 'sports',
+        country: 'us'
+    }
+]
 
 let token = '';
 
 // Auth tests
 
 tap.test('POST /users/signup', async (t) => { 
-    const response = await server.post('/users/signup').send(mockUser);
+    const response = await server.post('/auth/register').send(mockUser);
     t.equal(response.status, 200);
     t.end();
 });
 
 tap.test('POST /users/signup with missing email', async (t) => {
-    const response = await server.post('/users/signup').send({
+    const response = await server.post('/auth/register').send({
         name: mockUser.name,
         password: mockUser.password
     });
@@ -30,7 +38,7 @@ tap.test('POST /users/signup with missing email', async (t) => {
 });
 
 tap.test('POST /users/login', async (t) => { 
-    const response = await server.post('/users/login').send({
+    const response = await server.post('/auth/login').send({
         email: mockUser.email,
         password: mockUser.password
     });
@@ -41,7 +49,7 @@ tap.test('POST /users/login', async (t) => {
 });
 
 tap.test('POST /users/login with wrong password', async (t) => {
-    const response = await server.post('/users/login').send({
+    const response = await server.post('/auth/login').send({
         email: mockUser.email,
         password: 'wrongpassword'
     });
@@ -51,32 +59,36 @@ tap.test('POST /users/login with wrong password', async (t) => {
 
 // Preferences tests
 
+tap.test('POST /user/preferences', async(t) => {
+    const response = await server.post('/preferences').set('Authorization', `Bearer ${token}`).send({
+        category: 'sports',
+        country: 'us'
+    });
+    t.hasOwnProp(response.body, 'preferences');
+    t.same(response.body.preferences, mockUserPreferences[0]);
+    t.end();
+})
+
 tap.test('GET /users/preferences', async (t) => {
-    const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/preferences').set('Authorization', `Bearer ${token}`);
     t.equal(response.status, 200);
     t.hasOwnProp(response.body, 'preferences');
-    t.same(response.body.preferences, mockUser.preferences);
+    t.same(response.body.preferences, mockUserPreferences);
     t.end();
 });
 
 tap.test('GET /users/preferences without token', async (t) => {
-    const response = await server.get('/users/preferences');
+    const response = await server.get('/preferences');
     t.equal(response.status, 401);
     t.end();
 });
 
 tap.test('PUT /users/preferences', async (t) => {
-    const response = await server.put('/users/preferences').set('Authorization', `Bearer ${token}`).send({
-        preferences: ['movies', 'comics', 'games']
+    const response = await server.put('/preferences/1').set('Authorization', `Bearer ${token}`).send({
+        category: 'general',
+        country: 'us'
     });
-    t.equal(response.status, 200);
-});
-
-tap.test('Check PUT /users/preferences', async (t) => {
-    const response = await server.get('/users/preferences').set('Authorization', `Bearer ${token}`);
-    t.equal(response.status, 200);
-    t.same(response.body.preferences, ['movies', 'comics', 'games']);
-    t.end();
+    t.equal(response.status, 204);
 });
 
 // News tests

@@ -20,13 +20,13 @@ class ForbiddenError extends BaseError {
 
 class LoginError extends BaseError {
     constructor() {
-        super("Invalid Email or Password", 400);
+        super("Invalid Email or Password", 401);
     }
 };
 
 class DuplicateUserError extends BaseError {
     constructor() {
-        super("User already exists", 400);
+        super("User already exists", 401);
     }
 }
 
