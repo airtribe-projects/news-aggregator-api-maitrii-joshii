@@ -16,6 +16,11 @@ class userPreferencesService {
         return userPreference;
     };
 
+    retrieveUserPreference = async(preferenceId) => {
+        const userPreference = await userPreferencesRepository.getById(Number(preferenceId));
+        return userPreference;
+    }
+
     updateUserPreferences = async(userId, category, country) => {
         const userPreference = await userPreferencesRepository.update(Number(userId), { category:category, country:country });
         return userPreference;

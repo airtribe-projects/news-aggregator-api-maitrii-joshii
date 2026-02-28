@@ -6,12 +6,13 @@ class UserPreferencesRepository extends InMemoryRepository {
     }
 
     findByUserId = (userId) => {
+        const userPreferences = [];
         for(const [id, userPreference] of this.storage) {
             if(userPreference.userId == userId) {
-                return userPreference;
+                userPreferences.push(userPreference);
             }
         }
-        return null;
+        return userPreferences;
     }
 }
 

@@ -2,11 +2,17 @@ const userRepository = require('../repositories/userRepository');
 const bcrypt = require('bcrypt');
 const SALT_ROUND = 5;
 const jwt = require('jsonwebtoken');
+const { LoginError, DuplicateUserError } = require('../errors/authError');
 const JWT_SECRET = process.env.JWT_SECRET;
 
 class AuthService {
     
     register = async(userName = undefined, email = undefined, password = undefined) => {
+        const existingUser = userRepository.findByEmail(email);
+        if(existingUser) {
+            throw new DuplicateUserError();
+        }
+
         const hashedPassword = await bcrypt.hash(password, SALT_ROUND);
         const userEntity = {
             userName: userName,
@@ -21,13 +27,13 @@ class AuthService {
         const user = userRepository.findByEmail(email);
 
         if(!user) {
-            throw new Error("User not found");
+            throw new LoginError();
         }
 
         const isSamePassword = await bcrypt.compare(password, user.password);
 
         if(!isSamePassword) {
-            throw new Error("Invalid Password");
+            throw new LoginError();
         }
 
         const token = jwt.sign({ email:user.email }, JWT_SECRET, { expiresIn:'1h' });

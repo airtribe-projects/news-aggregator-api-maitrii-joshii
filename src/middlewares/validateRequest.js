@@ -1,10 +1,9 @@
+const { InvalidRequestParamsError } = require('../errors/requestError');
+
 const validateRequest = (schema) => (req, res, next) => {
     const result = schema.safeParse(req.body);
     if(!result.success) {
-        return res.status(400).json({
-            message: "Invalid Request Parameters",
-            errors: result.error.issues
-        });
+        throw new InvalidRequestParamsError();
     } else {
         next();
     }

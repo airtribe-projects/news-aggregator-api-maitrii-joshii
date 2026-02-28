@@ -23,6 +23,16 @@ class InMemoryRepository {
         this.storage.set(id, updated);
         return updated;
     }
+
+    // Retrieve entity by Id
+    getById(id) {
+        return this.storage.get(id);
+    }
+
+    //Retrieve all entities
+    getAll() {
+        return this.storage.values();
+    }
 }
 
 
